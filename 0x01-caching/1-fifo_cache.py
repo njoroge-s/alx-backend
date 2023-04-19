@@ -1,31 +1,30 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
 BaseCaching = __import__('base_caching').BaseCaching
 
 class FIFOCache(BaseCaching):
-    '''A class `FIFOCache` that inherits from
-       `BaseCaching` and is a caching system.
-    '''
-
-    def __init__(self):
-        super().__init__()
-        self.cache_data = OrderedDict()
-
+    """ FIFOCache class """
     def put(self, key, item):
-        '''assign to the dictionary `self.cache_data` the
-           `item` value for the key `key`
-        '''
-
-        if key is None or item is None:
-            return
-
-        if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            first_key, _ = self.cache_data.popitem(last=False)
-            print(f"DISCARD: {first_key}")
-
-        self.cache_data[key] = item
+        """ Add an item in the cache
+        """
+        if key and item:
+            if key in self.cache_data:
+                self.cache_data[key] = item
+            elif (len(self.cache_data) >= FIFOCache.MAX_ITEMS):
+                keys = list(self.cache_data.keys())
+                removed = keys[0]
+                self.cache_data.pop(removed)
+                self.cache_data[key] = item
+                print('DISCARD: {}'.format(removed))
+            else:
+                self.cache_data[key] = item
+        return None
 
     def get(self, key):
-        '''return the value in `self.cache_data` linked to `key`
-        '''
-        return self.cache_data.get(key, None)
+        """ Get an item by key
+        """
+        try:
+            item = self.cache_data[key]
+            return item
+        except KeyError:
+            return None
