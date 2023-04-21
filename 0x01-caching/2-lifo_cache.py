@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+""" Task 2: lifo caching
+"""
 
 from collections import OrderedDict
 from base_caching import BaseCaching
