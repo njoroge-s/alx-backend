@@ -1,30 +1,28 @@
-#!/usr/bin/python3
-
+#!/usr/bin/env python3
+""" FIFO caching
+"""
 BaseCaching = __import__('base_caching').BaseCaching
 
+
 class FIFOCache(BaseCaching):
-    """ FIFOCache class """
+    """ FIFOCache
+    """
+    def __init__(self):
+        super().__init__()
+
     def put(self, key, item):
-        """ Add an item in the cache
+        """ assigns the new item to the dictionary
         """
-        if key and item:
-            if key in self.cache_data:
-                self.cache_data[key] = item
-            elif (len(self.cache_data) >= FIFOCache.MAX_ITEMS):
-                keys = list(self.cache_data.keys())
-                removed = keys[0]
-                self.cache_data.pop(removed)
-                self.cache_data[key] = item
-                print('DISCARD: {}'.format(removed))
-            else:
-                self.cache_data[key] = item
-        return None
+        if not (key is None or item is None):
+            self.cache_data.update({key: item})
+            if len(self.cache_data) > BaseCaching.MAX_ITEMS:
+                first_in = list(self.cache_data.keys())[0]
+                del self.cache_data[first_in]
+                print(f'DISCARD: {first_in}')
 
     def get(self, key):
-        """ Get an item by key
+        """ returns the value in self.cache_data linked to key
         """
-        try:
-            item = self.cache_data[key]
-            return item
-        except KeyError:
+        if key is None or not (key in self.cache_data):
             return None
+        return self.cache_data[key]
